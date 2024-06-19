@@ -1,8 +1,7 @@
 package com.example.layeredarchitecture.controller;
 
-import com.example.layeredarchitecture.dao.ItemDAO;
-import com.example.layeredarchitecture.dao.ItemDAOImpl;
-import com.example.layeredarchitecture.db.DBConnection;
+import com.example.layeredarchitecture.bo.custom.impl.ItemBoImpl;
+import com.example.layeredarchitecture.bo.custom.ItemBo;
 import com.example.layeredarchitecture.model.ItemDTO;
 import com.example.layeredarchitecture.view.tdm.ItemTM;
 import com.jfoenix.controls.JFXButton;
@@ -38,7 +37,8 @@ public class ManageItemsFormController {
     public TextField txtUnitPrice;
     public JFXButton btnAddNewItem;
 
-    ItemDAO itemDAO = new ItemDAOImpl();
+    //ItemDAO itemDAO = new ItemDAOImpl();
+    ItemBo itemBo = new ItemBoImpl();
 
     public void initialize() {
         tblItems.getColumns().get(0).setCellValueFactory(new PropertyValueFactory<>("code"));
@@ -80,7 +80,7 @@ public class ManageItemsFormController {
 
 
             //ItemDAO itemDAO = new ItemDAOImpl();
-            ArrayList<ItemDTO> allItems = itemDAO.getAllItem();
+            ArrayList<ItemDTO> allItems = itemBo.getAllItem();
             for (ItemDTO itemDTO:allItems){
                 tblItems.getItems().add(new ItemTM(itemDTO.getCode(),itemDTO.getDescription(),itemDTO.getUnitPrice(),itemDTO.getQtyOnHand()));
 
@@ -150,7 +150,7 @@ public class ManageItemsFormController {
 //            pstm.executeUpdate();
 
             //ItemDAO itemDAO = new ItemDAOImpl();
-            itemDAO.deleteItem(code);
+            itemBo.deleteItem(code);
 
             tblItems.getItems().remove(tblItems.getSelectionModel().getSelectedItem());
             tblItems.getSelectionModel().clearSelection();
@@ -200,7 +200,7 @@ public class ManageItemsFormController {
 //                tblItems.getItems().add(new ItemTM(code, description, unitPrice, qtyOnHand));
 
                 //ItemDAO itemDAO = new ItemDAOImpl();
-                itemDAO.saveItems(new ItemDTO(code,description,unitPrice,qtyOnHand));
+                itemBo.saveItem(new ItemDTO(code,description,unitPrice,qtyOnHand));
 
                 tblItems.getItems().add(new ItemTM(code, description, unitPrice, qtyOnHand));
             } catch (SQLException e) {
@@ -225,7 +225,7 @@ public class ManageItemsFormController {
 
 
                 //ItemDAO itemDAO = new ItemDAOImpl();
-                itemDAO.updateItems(new ItemDTO(code,description,unitPrice,qtyOnHand));
+                itemBo.updateItem(new ItemDTO(code,description,unitPrice,qtyOnHand));
 
 
                 ItemTM selectedItem = tblItems.getSelectionModel().getSelectedItem();
@@ -251,7 +251,7 @@ public class ManageItemsFormController {
 //        return pstm.executeQuery().next();
 
         //ItemDAO itemDAO = new ItemDAOImpl();
-        boolean isExist = itemDAO.existItem(code);
+        boolean isExist = itemBo.existItem(code);
 
         return isExist;
     }
@@ -263,7 +263,7 @@ public class ManageItemsFormController {
 //            ResultSet rst = connection.createStatement().executeQuery("SELECT code FROM Item ORDER BY code DESC LIMIT 1;");
 
             //ItemDAO itemDAO = new ItemDAOImpl();
-            String id = itemDAO.generateId();
+            String id = itemBo.generateIdItem();
             if (id != null) {
                 int newItemId = Integer.parseInt(id.replace("I00-", "")) + 1;
                 return String.format("I00-%03d", newItemId);
